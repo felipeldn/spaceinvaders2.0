@@ -224,8 +224,7 @@ const createUser = (form) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: form.username.value,
-                password: form.password.value
+                username: form.username.value
             })
             })
             .then(resp => resp.json())
