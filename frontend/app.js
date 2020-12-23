@@ -136,7 +136,7 @@ function moveEnemies() {
     for (var enemy = 0; enemy < enemies.length; enemy++){
         enemies[enemy].top = enemies[enemy].top + 10;
         
-        if (enemies[enemy].top >= 800) {
+        if (enemies[enemy].top >= 700) {
             enemies[enemy].top = 100
         } 
     }
@@ -224,14 +224,14 @@ const createUser = (form) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: form.username.value
+                username: form.username.value,
+                password: form.password.value
             })
             })
             .then(resp => resp.json())
             .then(user => {
                 currentUserObj = user
                 currentUser = user.username
-                // getResults()
             })
             .then(logInBtn.style.display = 'none')
 }
