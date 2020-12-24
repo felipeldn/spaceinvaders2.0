@@ -7,12 +7,14 @@ const newUserForm = document.querySelector('.new_account_div')
 
 const logInBtn = document.querySelector('.log_in_button')
 const logInForm = document.querySelector('.log_in_div ')
+const newGameBtn = document.querySelector('img#setUp')
 const startGameBtn = document.querySelector('img#start')
 
 
 let currentUserObj
 let currentUser
 let currentGame
+let currentScore
 
 var hero = {
     top: 700,
@@ -185,6 +187,7 @@ function collisionDetection() {
 }
 
 function gameLoop() {
+    newGame();
     let buttons = document.querySelectorAll('#buttons');
     buttons.forEach(button => button.style.display = 'none');
     setTimeout(gameLoop, 100)
@@ -210,8 +213,6 @@ newUserForm.addEventListener('submit', event => {
     event.preventDefault()
     newUserForm.style.display = "none"
     createUser(event.target)
-    // newGameBtn.style.display = "inline-block"
-    // startGameBtn.style.display = "inline-block"
 })
 
 const createUser = (form) => {
@@ -228,11 +229,23 @@ const createUser = (form) => {
             .then(resp => resp.json())
             .then(user => {
                 currentUserObj = user
-                currentUser = user.username
-                console.log(currentUserObj)
+                // currentUser = user.username
             })
             .then(logInBtn.style.display = 'none')
             .then(startGameBtn.style.display = 'flex')
+}
+
+const newGame = () => {
+    fetch(GAME_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({user_id: currentUserObj.id})
+        }) 
+        .then(resp => resp.json())
+        .then(game => {
+            currentGame = game,
+            currentScore = game.score})
+        .catch(error => alert(error.message))    
 }
 
 logInBtn.addEventListener('click', event => {
@@ -245,8 +258,6 @@ logInForm.addEventListener('submit', event => {
     event.preventDefault()
     logInForm.style.display = "none"
     logInUser(event.target)
-    // newGameBtn.style.display = "inline-block"
-    // startGameBtn.style.display = "inline-block"
 })
 
 const logInUser = (form) => {    
@@ -273,6 +284,5 @@ startGameBtn.addEventListener('click', event => {
 // gameLoop();
 
 
-// User login
 // Hero health/death
 // High scores

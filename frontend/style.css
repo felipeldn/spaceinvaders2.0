@@ -32,7 +32,6 @@ body, html {
     left: 700px; */
 }
 
-
 #missiles {
     height: 100%;
     width: 100%;
@@ -115,6 +114,5 @@ body, html {
     top: 12px;
     left: 8px;
     width: 250px;
-    /* height: 110px; */
     z-index: 1;
 }
