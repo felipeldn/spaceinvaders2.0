@@ -1,4 +1,4 @@
-const SCORES_URL = 'http://localhost:3000/scores'
+const SCORE_URL = 'http://localhost:3000/scores'
 const GAME_URL = 'http://localhost:3000/games'
 const USER_URL = 'http://localhost:3000/users'
 
@@ -14,7 +14,7 @@ const startGameBtn = document.querySelector('img#start')
 let currentUserObj
 let currentUser
 let currentGame
-let currentScore
+let currentScore = 0
 let gameLoop
 
 var hero = {
@@ -149,6 +149,8 @@ function missileHit() {
                 missiles[missile].top <= (enemies[enemy].top + 50)  &&
                 missiles[missile].top >= enemies[enemy].top
             ){
+                // ++currentScore
+                console.log(currentScore)
                 console.log("HIT!")
                 enemies.splice(enemy, 1)
                 
@@ -181,13 +183,32 @@ function collisionDetection() {
                 clearTimeout(gameLoop)
             }
             stopGameLoop();
+            // updateGame();
             console.log("GAME OVER!")
         }
     }
 }
 
+// const updateGame = () => {
+//     fetch(GAME_URL + `/${currentGame.id}`, {
+//     method: 'PATCH',
+//     headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
+//     body: JSON.stringify({score: currentScore})
+//     })
+//     .then(resp => resp.json())
+//     .catch(error => alert(error.message))
+// }
+
+// function countHits(hits) {
+//     if (hits) {
+
+//         updateGame();
+//     }
+// }
+
 function runGame() {
     newGame();
+    // newScore();
     let buttons = document.querySelectorAll('#buttons');
     buttons.forEach(button => button.style.display = 'none');
     gameLoop = setTimeout(runGame, 100)
@@ -201,7 +222,7 @@ function runGame() {
     // drawExplosions();
     missileHit();
     collisionDetection();
-
+    // countHits(missileHit());
 }
 
 createacctBtn.addEventListener('click', event => {
@@ -218,7 +239,7 @@ newUserForm.addEventListener('submit', event => {
 })
 
 const createUser = (form) => {
-    currentUser = form.username.value
+    // currentUser = form.username.value
         return fetch(USER_URL, {
             method: 'POST',
             headers: {
@@ -231,7 +252,7 @@ const createUser = (form) => {
             .then(resp => resp.json())
             .then(user => {
                 currentUserObj = user
-                // currentUser = user.username
+                currentUser = user.username
             })
             .then(logInBtn.style.display = 'none')
             .then(startGameBtn.style.display = 'flex')
@@ -241,13 +262,15 @@ const newGame = () => {
     fetch(GAME_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({user_id: currentUserObj.id})
+        body: JSON.stringify({user_id: currentUserObj.id}),
         }) 
         .then(resp => resp.json())
         .then(game => {
-            currentGame = game,
-            currentScore = game.score})
-        .catch(error => alert(error.message))    
+            currentGame = game
+            currentGame.score = 0
+            currentScore = currentGame.score})
+        .catch(error => alert(error.message));
+
 }
 
 logInBtn.addEventListener('click', event => {
@@ -285,6 +308,4 @@ startGameBtn.addEventListener('click', event => {
 
 // gameLoop();
 
-
-// Hero health/death
 // High scores
