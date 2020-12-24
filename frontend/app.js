@@ -240,8 +240,6 @@ logInForm.addEventListener('submit', event => {
     event.preventDefault()
     logInForm.style.display = "none"
     logInUser(event.target)
-    // newGameBtn.style.display = "inline-block"
-    // startGameBtn.style.display = "inline-block"
 })
 
 const logInUser = (form) => {    
@@ -251,7 +249,6 @@ const logInUser = (form) => {
 
         currentUserObj = user
         currentUser = user.username
-        // getResults()
         })
     .catch(error => alert(error.message))
 }
