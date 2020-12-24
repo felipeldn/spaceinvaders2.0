@@ -49,7 +49,7 @@ var enemies = [
 ];
 
 document.onkeydown = function(key) {
-    console.log(key.keyCode);
+    // console.log(key.keyCode);
 
     if (key.keyCode === 37 && hero.left > 200){
         // console.log("LEFT")
@@ -210,12 +210,6 @@ newUserForm.addEventListener('submit', event => {
     // startGameBtn.style.display = "inline-block"
 })
 
-logInBtn.addEventListener('click', event => {
-    logInForm.style.display = "block"
-    logInBtn.style.display = 'none'
-    createacctBtn.style.display = 'none'
-})
-
 const createUser = (form) => {
     currentUser = form.username.value
         return fetch(USER_URL, {
@@ -231,6 +225,7 @@ const createUser = (form) => {
             .then(user => {
                 currentUserObj = user
                 currentUser = user.username
+                console.log(currentUserObj)
             })
             .then(logInBtn.style.display = 'none')
 }
@@ -249,16 +244,18 @@ logInForm.addEventListener('submit', event => {
     // startGameBtn.style.display = "inline-block"
 })
 
-const logInUser = (form) => {
+const logInUser = (form) => {    
     return fetch(`${USER_URL}/${form.username.value}`)
-    .then(resp => resp.json())
+    .then(resp => resp.json()) 
     .then(user => {
+
         currentUserObj = user
         currentUser = user.username
         // getResults()
-    })
+        })
     .catch(error => alert(error.message))
 }
+
 
 // gameLoop();
 
