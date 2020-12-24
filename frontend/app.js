@@ -7,6 +7,8 @@ const newUserForm = document.querySelector('.new_account_div')
 
 const logInBtn = document.querySelector('.log_in_button')
 const logInForm = document.querySelector('.log_in_div ')
+const startGameBtn = document.querySelector('img#start')
+
 
 let currentUserObj
 let currentUser
@@ -50,26 +52,25 @@ var enemies = [
 
 document.onkeydown = function(key) {
     // console.log(key.keyCode);
-
     if (key.keyCode === 37 && hero.left > 200){
         // console.log("LEFT")
         hero.left = hero.left - 10;
-        moveHero()
+        // moveHero()
     }
     else if (key.keyCode === 39 && hero.left < 900) {
         // console.log("RIGHT")
         hero.left = hero.left + 10;
-        moveHero()
+        // moveHero()
     }
     else if (key.keyCode === 38 && hero.top > 375) {
         // console.log("UP")
         hero.top = hero.top - 10;
-        moveHero()
+        // moveHero()
     }
     else if (key.keyCode === 40 && hero.top < 690) {
         // console.log("DOWN")
         hero.top = hero.top + 10
-        moveHero()
+        // moveHero()
     }
     else if (key.keyCode === 32)
     // console.log("FIRE!!")
@@ -77,7 +78,7 @@ document.onkeydown = function(key) {
             left: hero.left + 15, 
             top:  hero.top
     })
-    drawMissiles();
+    // drawMissiles();
 }
 
 
@@ -184,12 +185,15 @@ function collisionDetection() {
 }
 
 function gameLoop() {
+    let buttons = document.querySelectorAll('#buttons');
+    buttons.forEach(button => button.style.display = 'none');
     setTimeout(gameLoop, 100)
+    moveHero()
     moveMissiles();
     drawMissiles();
     moveEnemies();
     drawEnemies();
-    // moveExplosions();?
+    // moveExplosions();
     // drawExplosions();
     missileHit();
     collisionDetection();
@@ -228,6 +232,7 @@ const createUser = (form) => {
                 console.log(currentUserObj)
             })
             .then(logInBtn.style.display = 'none')
+            .then(startGameBtn.style.display = 'flex')
 }
 
 logInBtn.addEventListener('click', event => {
@@ -240,6 +245,8 @@ logInForm.addEventListener('submit', event => {
     event.preventDefault()
     logInForm.style.display = "none"
     logInUser(event.target)
+    // newGameBtn.style.display = "inline-block"
+    // startGameBtn.style.display = "inline-block"
 })
 
 const logInUser = (form) => {    
@@ -250,8 +257,17 @@ const logInUser = (form) => {
         currentUserObj = user
         currentUser = user.username
         })
+    .then(startGameBtn.style.display = 'flex')    
     .catch(error => alert(error.message))
 }
+
+startGameBtn.addEventListener('click', event => {
+    startGameBtn.style.display = 'none'
+    gameLoop()
+    // playSound(music)
+    let buttons = document.querySelectorAll('.buttons')
+    buttons.forEach(button => button.style.display = 'none')
+})
 
 
 // gameLoop();
