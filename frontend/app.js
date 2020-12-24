@@ -15,6 +15,7 @@ let currentUserObj
 let currentUser
 let currentGame
 let currentScore
+let gameLoop
 
 var hero = {
     top: 700,
@@ -90,10 +91,8 @@ function moveHero() {
 }
 
 
-function drawMissiles() {
-    
+function drawMissiles() {  
     var missilesNode = document.getElementById('missiles')
-
     if (missilesNode != null){
 
         document.getElementById('missiles').innerHTML = ""
@@ -102,7 +101,6 @@ function drawMissiles() {
             document.getElementById('missiles').innerHTML += `<div class='missile' style='left:${missiles[missile].left}px; top:${missiles[missile].top}px;'></div>`;
         }
     }   
-    
 }
 
 function moveMissiles() {
@@ -112,9 +110,7 @@ function moveMissiles() {
 }
 
 function drawEnemies() {
-
     var enemiesNode = document.getElementById('enemies')
-
     if (enemiesNode != null){
         
         document.getElementById('enemies').innerHTML = ""
@@ -122,7 +118,6 @@ function drawEnemies() {
         for (var enemy = 0; enemy < enemies.length; enemy++) {
         document.getElementById('enemies').innerHTML += `<div class='enemy' style='left:${enemies[enemy].left}px; top:${enemies[enemy].top}px;'></div>`;
     }}
-
 }
 
 // function drawExplosions() {
@@ -154,6 +149,7 @@ function missileHit() {
                 missiles[missile].top <= (enemies[enemy].top + 50)  &&
                 missiles[missile].top >= enemies[enemy].top
             ){
+                console.log("HIT!")
                 enemies.splice(enemy, 1)
                 
                 enemies.push({
@@ -181,16 +177,21 @@ function collisionDetection() {
             hero.top <= (enemies[enemy].top + 50)  &&
             hero.top >= enemies[enemy].top
         ){
+            function stopGameLoop(){
+                clearTimeout(gameLoop)
+            }
+            stopGameLoop();
             console.log("GAME OVER!")
         }
     }
 }
 
-function gameLoop() {
+function runGame() {
     newGame();
     let buttons = document.querySelectorAll('#buttons');
     buttons.forEach(button => button.style.display = 'none');
-    setTimeout(gameLoop, 100)
+    gameLoop = setTimeout(runGame, 100)
+    gameLoop
     moveHero()
     moveMissiles();
     drawMissiles();
@@ -200,6 +201,7 @@ function gameLoop() {
     // drawExplosions();
     missileHit();
     collisionDetection();
+
 }
 
 createacctBtn.addEventListener('click', event => {
@@ -274,7 +276,7 @@ const logInUser = (form) => {
 
 startGameBtn.addEventListener('click', event => {
     startGameBtn.style.display = 'none'
-    gameLoop()
+    runGame()
     // playSound(music)
     let buttons = document.querySelectorAll('.buttons')
     buttons.forEach(button => button.style.display = 'none')
