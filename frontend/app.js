@@ -7,14 +7,13 @@ const newUserForm = document.querySelector('.new_account_div')
 
 const logInBtn = document.querySelector('.log_in_button')
 const logInForm = document.querySelector('.log_in_div ')
-const newGameBtn = document.querySelector('img#setUp')
 const startGameBtn = document.querySelector('img#start')
-
+const gameOverPhoto = document.querySelector('img#gameover')
+const scoreBtn = document.querySelector('img#score')
 
 let currentUserObj
 let currentUser
 let currentGame
-let currentScore = 0
 let gameLoop
 
 var hero = {
@@ -120,19 +119,9 @@ function drawEnemies() {
     }}
 }
 
-// function drawExplosions() {
-
-//     document.getElementById('explosions').innerHTML = ""
-    
-//     for (var explosion = 0; explosion < explosions.length; explosion++) {
-//         document.getElementById('explosions').innerHTML += `<div class='explosion' style='left:${explosions[explosion].left}px; top:${explosions[explosion].top}px;'></div>`;
-//     }
-
-// }
-
 function moveEnemies() {
     for (var enemy = 0; enemy < enemies.length; enemy++){
-        enemies[enemy].top = enemies[enemy].top + 10;
+        enemies[enemy].top = enemies[enemy].top + 15;
         
         if (enemies[enemy].top >= 700) {
             enemies[enemy].top = 100
@@ -149,8 +138,10 @@ function missileHit() {
                 missiles[missile].top <= (enemies[enemy].top + 50)  &&
                 missiles[missile].top >= enemies[enemy].top
             ){
-                // ++currentScore
-                console.log(currentScore)
+                currentGame.score++;
+				
+				updateGame()
+				
                 console.log("HIT!")
                 enemies.splice(enemy, 1)
                 
@@ -181,38 +172,22 @@ function collisionDetection() {
         ){
             function stopGameLoop(){
                 clearTimeout(gameLoop)
+                clearTimeout(getGameLoop)
             }
             stopGameLoop();
-            // updateGame();
-            console.log("GAME OVER!")
+            gameOverPhoto.style.display = 'flex'
+            scoreBtn.style.display = 'flex'
+            // console.log("GAME OVER!")
         }
     }
 }
 
-// const updateGame = () => {
-//     fetch(GAME_URL + `/${currentGame.id}`, {
-//     method: 'PATCH',
-//     headers: {'Content-Type': 'application/json', 'accept': 'application/json'},
-//     body: JSON.stringify({score: currentScore})
-//     })
-//     .then(resp => resp.json())
-//     .catch(error => alert(error.message))
-// }
-
-// function countHits(hits) {
-//     if (hits) {
-
-//         updateGame();
-//     }
-// }
-
-function runGame() {
-    newGame();
+function runGame() {   
     // newScore();
     let buttons = document.querySelectorAll('#buttons');
     buttons.forEach(button => button.style.display = 'none');
     gameLoop = setTimeout(runGame, 100)
-    gameLoop
+    // gameLoop
     moveHero()
     moveMissiles();
     drawMissiles();
@@ -222,7 +197,7 @@ function runGame() {
     // drawExplosions();
     missileHit();
     collisionDetection();
-    // countHits(missileHit());
+
 }
 
 createacctBtn.addEventListener('click', event => {
@@ -258,21 +233,6 @@ const createUser = (form) => {
             .then(startGameBtn.style.display = 'flex')
 }
 
-const newGame = () => {
-    fetch(GAME_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({user_id: currentUserObj.id}),
-        }) 
-        .then(resp => resp.json())
-        .then(game => {
-            currentGame = game
-            currentGame.score = 0
-            currentScore = currentGame.score})
-        .catch(error => alert(error.message));
-
-}
-
 logInBtn.addEventListener('click', event => {
     logInForm.style.display = "block"
     logInBtn.style.display = 'none'
@@ -293,19 +253,86 @@ const logInUser = (form) => {
         currentUserObj = user
         currentUser = user.username
         })
-    .then(startGameBtn.style.display = 'flex')    
+    .then(startGameBtn.style.display = 'flex')
     .catch(error => alert(error.message))
 }
 
 startGameBtn.addEventListener('click', event => {
-    startGameBtn.style.display = 'none'
-    runGame()
+    startGameBtn.style.display = 'none' 
+    newGame()
     // playSound(music)
     let buttons = document.querySelectorAll('.buttons')
     buttons.forEach(button => button.style.display = 'none')
 })
 
+scoreBtn.addEventListener('click', event => {
+    scoreBtn.style.display = 'none'   
+    displayScore()
+})
 
-// gameLoop();
+const newGame = () => {
 
-// High scores
+    fetch(GAME_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({user_id: currentUserObj.id}),
+        }) 
+        .then(resp => resp.json())
+        .then(game => {
+            currentGame = game
+			console.log( currentGame.score )
+			getCurrentGame();
+			runGame();			
+		})
+        .catch(error => alert(error.message));
+
+}
+
+const updateGame = () => {
+	
+	fetch(GAME_URL + '/' + currentGame.id, {
+		method: 'PUT',
+		headers: {'Content-Type': 'application/json'},
+		body: JSON.stringify({ score: currentGame.score }),
+	}) 
+	.then(resp => resp.json())
+	.then(game => {
+		currentGame = game
+		console.log( currentGame.score )
+	})
+	.catch(error => alert(error.message));
+				
+}
+
+const getCurrentGame = () => {
+	
+    fetch(GAME_URL + '/' + currentGame.id, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+        }) 
+        .then(resp => resp.json())
+        .then(game => {
+            currentGame = game
+			console.log( currentGame.score )
+		})
+        .catch(error => alert(error.message));
+	
+	getGameLoop = setTimeout(getCurrentGame, 1000)
+}
+
+function displayScore() {
+    userScore = document.querySelector(".userscore")
+    if(currentGame.score < 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hits!`
+        userScore.style.display = 'flex'
+    }
+    else if (currentGame.score === 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hit!`
+        userScore.style.display = 'flex'
+    }
+    else if (currentGame.score > 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hits!`
+        userScore.style.display = 'flex'
+    }
+}
+// gameLoop()
