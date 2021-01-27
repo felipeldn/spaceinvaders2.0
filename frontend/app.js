@@ -11,21 +11,23 @@ const startGameBtn = document.querySelector('img#start')
 const gameOverPhoto = document.querySelector('img#gameover')
 const scoreBtn = document.querySelector('img#score')
 
+userScore = document.querySelector(".userscore")
+
 let currentUserObj
 let currentUser
 let currentGame
 let gameLoop
 
-var hero = {
+let hero = {
     top: 700,
     left: 700
 };
 
 // var explosions = [];
 
-var missiles = [];
+let missiles = [];
 
-var enemies = [
+let enemies = [
     {left: 200, top: 100},
     {left: 300, top: 100},
     {left: 400, top: 100},
@@ -91,25 +93,25 @@ function moveHero() {
 
 
 function drawMissiles() {  
-    var missilesNode = document.getElementById('missiles')
+    let missilesNode = document.getElementById('missiles')
     if (missilesNode != null){
 
         document.getElementById('missiles').innerHTML = ""
 
-            for (var missile = 0; missile < missiles.length; missile++) {
+            for (let missile = 0; missile < missiles.length; missile++) {
             document.getElementById('missiles').innerHTML += `<div class='missile' style='left:${missiles[missile].left}px; top:${missiles[missile].top}px;'></div>`;
         }
     }   
 }
 
 function moveMissiles() {
-    for (var missile = 0; missile < missiles.length; missile++){
+    for (let missile = 0; missile < missiles.length; missile++){
         missiles[missile].top = missiles[missile].top - 10;
     }
 }
 
 function drawEnemies() {
-    var enemiesNode = document.getElementById('enemies')
+    let enemiesNode = document.getElementById('enemies')
     if (enemiesNode != null){
         
         document.getElementById('enemies').innerHTML = ""
@@ -120,7 +122,7 @@ function drawEnemies() {
 }
 
 function moveEnemies() {
-    for (var enemy = 0; enemy < enemies.length; enemy++){
+    for (let enemy = 0; enemy < enemies.length; enemy++){
         enemies[enemy].top = enemies[enemy].top + 15;
         
         if (enemies[enemy].top >= 700) {
@@ -129,9 +131,44 @@ function moveEnemies() {
     }
 }
 
+function resetEnemies() {
+    for (let enemy = 0; enemy < enemies.length; enemy++){
+        
+        if (collisionDetection) {
+            enemies[enemy].top = 100}
+
+            // var enemies = [
+            //     {left: 200, top: 100},
+            //     {left: 300, top: 100},
+            //     {left: 400, top: 100},
+            //     {left: 500, top: 100},
+            //     {left: 600, top: 100},
+            //     {left: 700, top: 100},
+            //     {left: 800, top: 100},
+            //     {left: 900, top: 100},
+            //     {left: 200, top: 175},
+            //     {left: 300, top: 175},
+            //     {left: 400, top: 175},
+            //     {left: 500, top: 175},
+            //     {left: 600, top: 175},
+            //     {left: 700, top: 175},
+            //     {left: 800, top: 175},
+            //     {left: 900, top: 175},
+            //     {left: 200, top: 250},
+            //     {left: 300, top: 250},
+            //     {left: 400, top: 250},
+            //     {left: 500, top: 250},
+            //     {left: 600, top: 250},
+            //     {left: 700, top: 250},
+            //     {left: 800, top: 250},
+            //     {left: 900, top: 250}
+            // ];
+    }
+}
+
 function missileHit() {
-    for (var enemy = 0; enemy < enemies.length; enemy++){
-        for (var missile = 0; missile < missiles.length; missile++){  
+    for (let enemy = 0; enemy < enemies.length; enemy++){
+        for (let missile = 0; missile < missiles.length; missile++){  
             if (
                 missiles[missile].left >= enemies[enemy].left  &&
                 missiles[missile].left <= (enemies[enemy].left + 50)  &&
@@ -163,7 +200,7 @@ function missileHit() {
 }
 
 function collisionDetection() {
-    for (var enemy = 0; enemy < enemies.length; enemy++){
+    for (let enemy = 0; enemy < enemies.length; enemy++){
         if (
             hero.left >= enemies[enemy].left  &&
             hero.left <= (enemies[enemy].left + 50)  &&
@@ -177,6 +214,7 @@ function collisionDetection() {
             stopGameLoop();
             gameOverPhoto.style.display = 'flex'
             scoreBtn.style.display = 'flex'
+            startGameBtn.style.display = 'flex'
             // console.log("GAME OVER!")
         }
     }
@@ -229,8 +267,9 @@ const createUser = (form) => {
                 currentUserObj = user
                 currentUser = user.username
             })
-            .then(logInBtn.style.display = 'none')
             .then(startGameBtn.style.display = 'flex')
+            .then(welcomeUser())
+            .catch(error => alert(error.message))
 }
 
 logInBtn.addEventListener('click', event => {
@@ -254,11 +293,15 @@ const logInUser = (form) => {
         currentUser = user.username
         })
     .then(startGameBtn.style.display = 'flex')
+    .then(welcomeUser)
     .catch(error => alert(error.message))
 }
 
-startGameBtn.addEventListener('click', event => {
-    startGameBtn.style.display = 'none' 
+startGameBtn.addEventListener('click', event => { 
+    startGameBtn.style.display = 'none'
+    gameOverPhoto.style.display = 'none'
+    userScore.style.display = 'none'
+    // resetEnemies()
     newGame()
     // playSound(music)
     let buttons = document.querySelectorAll('.buttons')
@@ -284,8 +327,7 @@ const newGame = () => {
 			getCurrentGame();
 			runGame();			
 		})
-        .catch(error => alert(error.message));
-
+        .catch(error => alert(error.message)); 
 }
 
 const updateGame = () => {
@@ -298,7 +340,7 @@ const updateGame = () => {
 	.then(resp => resp.json())
 	.then(game => {
 		currentGame = game
-		console.log( currentGame.score )
+		// console.log( currentGame.score )
 	})
 	.catch(error => alert(error.message));
 				
@@ -320,8 +362,14 @@ const getCurrentGame = () => {
 	getGameLoop = setTimeout(getCurrentGame, 1000)
 }
 
+function welcomeUser() {
+    let welcome = document.querySelector(".welcome")
+
+    welcome.innerHTML = `Welcome ${currentUser}. Enjoy shooting some aliens!`
+    welcome.style.display = 'flex'
+}
+
 function displayScore() {
-    userScore = document.querySelector(".userscore")
     if(currentGame.score < 1) {
         userScore.innerHTML = `You scored ${currentGame.score} hits!`
         userScore.style.display = 'flex'

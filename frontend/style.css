@@ -124,7 +124,7 @@ body, html {
 .score {
     display: none;
     position: absolute;
-    top: 60px;
+    top: 90px;
     left: 1000px;
     width: 200px;
 }
@@ -141,5 +141,20 @@ body, html {
     font-weight: bold;
     color: cornsilk;
     font-size: large;
+    z-index: 1;
+}
+
+.welcome {
+    /* background-image: url('assets/scoreback.png'); */
+    background-blend-mode: darken;
+    display: none;
+    width: 125px;
+    height: 75px;
+    position: absolute;
+    top: 30px;
+    left: 1000px;
+    font-weight: bold;
+    color: cornsilk;
+    font-size: small;
     z-index: 1;
 }
