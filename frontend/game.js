@@ -3,7 +3,8 @@ class Game {
         this.score = score
     }
 
-    setUpGame() {
+    getCurrentGame = () => {
+	
         fetch(GAME_URL + '/' + currentGame.id, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
@@ -15,10 +16,8 @@ class Game {
             })
             .catch(error => alert(error.message));
         
-        getGameLoop = setTimeout(setUpGame, 1000)
+        getGameLoop = setTimeout(getCurrentGame, 1000)
     }
-
-    
 
     yourScore() {
         console.log(`You scored ${this.score} hits this time!`)
@@ -28,6 +27,6 @@ class Game {
     //which instance methods can you create?
 }
 
-let gameOne = Game.setUpGame()
+let currentGame = Game.getCurrentGame()
 
 gameOne.yourScore()

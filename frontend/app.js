@@ -116,7 +116,7 @@ function drawEnemies() {
         
         document.getElementById('enemies').innerHTML = ""
         
-        for (var enemy = 0; enemy < enemies.length; enemy++) {
+        for (let enemy = 0; enemy < enemies.length; enemy++) {
         document.getElementById('enemies').innerHTML += `<div class='enemy' style='left:${enemies[enemy].left}px; top:${enemies[enemy].top}px;'></div>`;
     }}
 }
