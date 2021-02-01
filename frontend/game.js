@@ -26,7 +26,3 @@ class Game {
     //which class methods can you create?
     //which instance methods can you create?
 }
-
-let currentGame = Game.getCurrentGame()
-
-gameOne.yourScore()
