@@ -1,4 +1,6 @@
-const SCORE_URL = 'http://localhost:3000/scores'
+import Game from "./game.js"
+
+// const SCORE_URL = 'http://localhost:3000/scores'
 const GAME_URL = 'http://localhost:3000/games'
 const USER_URL = 'http://localhost:3000/users'
 
@@ -11,11 +13,12 @@ const startGameBtn = document.querySelector('img#start')
 const gameOverPhoto = document.querySelector('img#gameover')
 const scoreBtn = document.querySelector('img#score')
 
-userScore = document.querySelector(".userscore")
+userScore = document.querySelector(".userscore")  
 
 let currentUserObj
 let currentUser
 let currentGame
+// let currentGame = Game.find({user_id: currentUserObj.id})
 let gameLoop
 
 let hero = {
@@ -101,7 +104,7 @@ function drawMissiles() {
             for (let missile = 0; missile < missiles.length; missile++) {
             document.getElementById('missiles').innerHTML += `<div class='missile' style='left:${missiles[missile].left}px; top:${missiles[missile].top}px;'></div>`;
         }
-    }   
+    } 
 }
 
 function moveMissiles() {
@@ -131,11 +134,11 @@ function moveEnemies() {
     }
 }
 
-function resetEnemies() {
-    for (let enemy = 0; enemy < enemies.length; enemy++){
+// function resetEnemies() {
+//     for (let enemy = 0; enemy < enemies.length; enemy++){
         
-        if (collisionDetection) {
-            enemies[enemy].top = 100}
+//         if (collisionDetection) {
+//             enemies[enemy].top = 100}
 
             // var enemies = [
             //     {left: 200, top: 100},
@@ -163,8 +166,8 @@ function resetEnemies() {
             //     {left: 800, top: 250},
             //     {left: 900, top: 250}
             // ];
-    }
-}
+//     }
+// }
 
 function missileHit() {
     for (let enemy = 0; enemy < enemies.length; enemy++){
@@ -177,7 +180,7 @@ function missileHit() {
             ){
                 currentGame.score++;
 				
-				updateGame()
+			    updateGame();
 				
                 console.log("HIT!")
                 enemies.splice(enemy, 1)
@@ -221,11 +224,10 @@ function collisionDetection() {
 }
 
 function runGame() {   
-    // newScore();
+
     let buttons = document.querySelectorAll('#buttons');
     buttons.forEach(button => button.style.display = 'none');
     gameLoop = setTimeout(runGame, 100)
-    // gameLoop
     moveHero()
     moveMissiles();
     drawMissiles();
@@ -302,7 +304,8 @@ startGameBtn.addEventListener('click', event => {
     gameOverPhoto.style.display = 'none'
     userScore.style.display = 'none'
     // resetEnemies()
-    newGame()
+    //newGame()
+    newGame();
     // playSound(music)
     let buttons = document.querySelectorAll('.buttons')
     buttons.forEach(button => button.style.display = 'none')
@@ -312,55 +315,6 @@ scoreBtn.addEventListener('click', event => {
     scoreBtn.style.display = 'none'   
     displayScore()
 })
-
-const newGame = () => {
-
-    fetch(GAME_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({user_id: currentUserObj.id}),
-        }) 
-        .then(resp => resp.json())
-        .then(game => {
-            currentGame = game
-			console.log( currentGame.score )
-			getCurrentGame();
-			runGame();			
-		})
-        .catch(error => alert(error.message)); 
-}
-
-const updateGame = () => {
-	
-	fetch(GAME_URL + '/' + currentGame.id, {
-		method: 'PUT',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({ score: currentGame.score }),
-	}) 
-	.then(resp => resp.json())
-	.then(game => {
-		currentGame = game
-		// console.log( currentGame.score )
-	})
-	.catch(error => alert(error.message));
-				
-}
-
-const getCurrentGame = () => {
-	
-    fetch(GAME_URL + '/' + currentGame.id, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'}
-        }) 
-        .then(resp => resp.json())
-        .then(game => {
-            currentGame = game
-			console.log( currentGame.score )
-		})
-        .catch(error => alert(error.message));
-	
-	getGameLoop = setTimeout(getCurrentGame, 1000)
-}
 
 function welcomeUser() {
     let welcome = document.querySelector(".welcome")
@@ -383,4 +337,54 @@ function displayScore() {
         userScore.style.display = 'flex'
     }
 }
+
+// newGame = () => {
+
+//     fetch(GAME_URL, {
+//         method: 'POST',
+//         headers: {'Content-Type': 'application/json'},
+//         body: JSON.stringify({user_id: currentUserObj.id}),
+//         }) 
+//         .then(resp => resp.json())
+//         .then(game => {
+//             currentGame = game
+//             console.log( currentGame.score )
+//             getCurrentGame();	
+//             runGame();		
+//         })
+//         .catch(error => alert(error.message)); 
+// }
+
+// updateGame = () => {
+    
+//     fetch(GAME_URL + '/' + currentGame.id, {
+//         method: 'PATCH',
+//         headers: {'Content-Type': 'application/json'},
+//         body: JSON.stringify({ score: currentGame.score }),
+//     }) 
+//     .then(resp => resp.json())
+//     .then(game => {
+//         currentGame = game
+//         // console.log( currentGame.score )
+//     })
+//     .catch(error => alert(error.message));
+                
+// }
+
+// getCurrentGame = () => {
+    
+//     fetch(GAME_URL + '/' + currentGame.id, {
+//         method: 'GET',
+//         headers: {'Content-Type': 'application/json'}
+//         }) 
+//         .then(resp => resp.json())
+//         .then(game => {
+//             currentGame = game
+//             console.log( currentGame.score )
+//         })
+//         .catch(error => alert(error.message));
+    
+//     getGameLoop = setTimeout(getCurrentGame, 1000)
+// }
+
 // gameLoop()
