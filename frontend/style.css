@@ -129,6 +129,15 @@ body, html {
     width: 200px;
 }
 
+.mytop10 {
+    display: none;
+    position: absolute;
+    top: 200px;
+    left: 1000px;
+    height: 50px;
+    width: 80px;
+}
+
 .userscore {
     background-image: url('assets/scoreback.png');
     display: none;

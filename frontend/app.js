@@ -1,6 +1,3 @@
-import Game from "./game.js"
-
-// const SCORE_URL = 'http://localhost:3000/scores'
 const GAME_URL = 'http://localhost:3000/games'
 const USER_URL = 'http://localhost:3000/users'
 
@@ -12,14 +9,16 @@ const logInForm = document.querySelector('.log_in_div ')
 const startGameBtn = document.querySelector('img#start')
 const gameOverPhoto = document.querySelector('img#gameover')
 const scoreBtn = document.querySelector('img#score')
+// const myTopScoresBtn = document.querySelector('img#mytop10')
 
 userScore = document.querySelector(".userscore")  
 
 let currentUserObj
 let currentUser
 let currentGame
-// let currentGame = Game.find({user_id: currentUserObj.id})
 let gameLoop
+
+let playerGame = new Game(); 
 
 let hero = {
     top: 700,
@@ -134,41 +133,6 @@ function moveEnemies() {
     }
 }
 
-// function resetEnemies() {
-//     for (let enemy = 0; enemy < enemies.length; enemy++){
-        
-//         if (collisionDetection) {
-//             enemies[enemy].top = 100}
-
-            // var enemies = [
-            //     {left: 200, top: 100},
-            //     {left: 300, top: 100},
-            //     {left: 400, top: 100},
-            //     {left: 500, top: 100},
-            //     {left: 600, top: 100},
-            //     {left: 700, top: 100},
-            //     {left: 800, top: 100},
-            //     {left: 900, top: 100},
-            //     {left: 200, top: 175},
-            //     {left: 300, top: 175},
-            //     {left: 400, top: 175},
-            //     {left: 500, top: 175},
-            //     {left: 600, top: 175},
-            //     {left: 700, top: 175},
-            //     {left: 800, top: 175},
-            //     {left: 900, top: 175},
-            //     {left: 200, top: 250},
-            //     {left: 300, top: 250},
-            //     {left: 400, top: 250},
-            //     {left: 500, top: 250},
-            //     {left: 600, top: 250},
-            //     {left: 700, top: 250},
-            //     {left: 800, top: 250},
-            //     {left: 900, top: 250}
-            // ];
-//     }
-// }
-
 function missileHit() {
     for (let enemy = 0; enemy < enemies.length; enemy++){
         for (let missile = 0; missile < missiles.length; missile++){  
@@ -180,7 +144,7 @@ function missileHit() {
             ){
                 currentGame.score++;
 				
-			    updateGame();
+			    playerGame.updateGame();
 				
                 console.log("HIT!")
                 enemies.splice(enemy, 1)
@@ -218,7 +182,69 @@ function collisionDetection() {
             gameOverPhoto.style.display = 'flex'
             scoreBtn.style.display = 'flex'
             startGameBtn.style.display = 'flex'
-            // console.log("GAME OVER!")
+            // myTopScoresBtn.style.display = 'flex'
+            console.log("GAME OVER!")
+        }
+    }
+}
+
+// function createEnemies(left, leftSpace, top, topSpace) {
+    
+//     // Create an empty array
+//     // Create a starting point for both axis'
+//     // loop and increment by Space args
+//     // once each side of the grid is done, reset to starting points
+//     enemies = []
+//     let startLeft = left
+//     for (let x = 0; x < 8; x++) {
+//         let startTop = top
+//         for (let y = 0; y < 3; y++) {
+
+//             console.log(x, y)
+//             // let nextLeft = left + leftSpace
+//             // let nextTop = top + topSpace
+//             // console.log(`Left: ${left}, nxt: ${nextLeft}`)
+//             // console.log(`Top: ${top}, nxt: ${nextTop}`)
+//         }
+//     }
+// }
+
+function resetEnemies() {
+    for (let enemy = 0; enemy < enemies.length; enemy++){
+        
+        if (collisionDetection) {
+
+            enemies = [
+                {left: 200, top: 100},
+                {left: 300, top: 100},
+                {left: 400, top: 100},
+                {left: 500, top: 100},
+                {left: 600, top: 100},
+                {left: 700, top: 100},
+                {left: 800, top: 100},
+                {left: 900, top: 100},
+                {left: 200, top: 175},
+                {left: 300, top: 175},
+                {left: 400, top: 175},
+                {left: 500, top: 175},
+                {left: 600, top: 175},
+                {left: 700, top: 175},
+                {left: 800, top: 175},
+                {left: 900, top: 175},
+                {left: 200, top: 250},
+                {left: 300, top: 250},
+                {left: 400, top: 250},
+                {left: 500, top: 250},
+                {left: 600, top: 250},
+                {left: 700, top: 250},
+                {left: 800, top: 250},
+                {left: 900, top: 250}
+            ];
+
+            hero = {
+                top: 700,
+                left: 700
+            }
         }
     }
 }
@@ -253,6 +279,56 @@ newUserForm.addEventListener('submit', event => {
     createUser(event.target)
 })
 
+logInBtn.addEventListener('click', event => {
+    logInForm.style.display = "block"
+    logInBtn.style.display = 'none'
+    createacctBtn.style.display = 'none'
+})
+
+logInForm.addEventListener('submit', event => {
+    event.preventDefault()
+    logInForm.style.display = "none"
+    logInUser(event.target)
+})
+
+startGameBtn.addEventListener('click', event => { 
+    startGameBtn.style.display = 'none'
+    gameOverPhoto.style.display = 'none'
+    userScore.style.display = 'none'
+    resetEnemies();
+    playerGame.newGame();
+    // playSound(music)
+    let buttons = document.querySelectorAll('.buttons')
+    buttons.forEach(button => button.style.display = 'none')
+})
+
+scoreBtn.addEventListener('click', event => {
+    scoreBtn.style.display = 'none'   
+    displayScore()
+})
+
+function welcomeUser() {
+    let welcome = document.querySelector(".welcome")
+
+    welcome.innerHTML = `Welcome ${currentUser}. Enjoy shooting some aliens!`
+    welcome.style.display = 'flex'
+}
+
+function displayScore() {
+    if(currentGame.score < 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hits! Try again?`
+        userScore.style.display = 'flex'
+    }
+    else if (currentGame.score === 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hit! Try again?`
+        userScore.style.display = 'flex'
+    }
+    else if (currentGame.score > 1) {
+        userScore.innerHTML = `You scored ${currentGame.score} hits! Try again?`
+        userScore.style.display = 'flex'
+    }
+}
+
 const createUser = (form) => {
     // currentUser = form.username.value
         return fetch(USER_URL, {
@@ -274,18 +350,6 @@ const createUser = (form) => {
             .catch(error => alert(error.message))
 }
 
-logInBtn.addEventListener('click', event => {
-    logInForm.style.display = "block"
-    logInBtn.style.display = 'none'
-    createacctBtn.style.display = 'none'
-})
-
-logInForm.addEventListener('submit', event => {
-    event.preventDefault()
-    logInForm.style.display = "none"
-    logInUser(event.target)
-})
-
 const logInUser = (form) => {    
     return fetch(`${USER_URL}/${form.username.value}`)
     .then(resp => resp.json()) 
@@ -295,96 +359,46 @@ const logInUser = (form) => {
         currentUser = user.username
         })
     .then(startGameBtn.style.display = 'flex')
+    // .then(myTopScoresBtn.style.display = 'flex')
     .then(welcomeUser)
     .catch(error => alert(error.message))
 }
 
-startGameBtn.addEventListener('click', event => { 
-    startGameBtn.style.display = 'none'
-    gameOverPhoto.style.display = 'none'
-    userScore.style.display = 'none'
-    // resetEnemies()
-    //newGame()
-    newGame();
-    // playSound(music)
-    let buttons = document.querySelectorAll('.buttons')
-    buttons.forEach(button => button.style.display = 'none')
-})
 
-scoreBtn.addEventListener('click', event => {
-    scoreBtn.style.display = 'none'   
-    displayScore()
-})
-
-function welcomeUser() {
-    let welcome = document.querySelector(".welcome")
-
-    welcome.innerHTML = `Welcome ${currentUser}. Enjoy shooting some aliens!`
-    welcome.style.display = 'flex'
+getCurrentGame = () => {
+    
+    fetch(GAME_URL + '/' + currentGame.id, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+        }) 
+        .then(resp => resp.json())
+        .then(game => {
+            currentGame = game
+            console.log( currentGame.score )
+        })
+        .catch(error => alert(error.message));
+    
+    getGameLoop = setTimeout(getCurrentGame, 1000)
 }
 
-function displayScore() {
-    if(currentGame.score < 1) {
-        userScore.innerHTML = `You scored ${currentGame.score} hits!`
-        userScore.style.display = 'flex'
-    }
-    else if (currentGame.score === 1) {
-        userScore.innerHTML = `You scored ${currentGame.score} hit!`
-        userScore.style.display = 'flex'
-    }
-    else if (currentGame.score > 1) {
-        userScore.innerHTML = `You scored ${currentGame.score} hits!`
-        userScore.style.display = 'flex'
-    }
-}
+// myTopScoresBtn.addEventListener('click',event => {
+//     userTopScores();
+// })
 
-// newGame = () => {
+// scoresButton
+// Make API call to custom route
 
-//     fetch(GAME_URL, {
-//         method: 'POST',
-//         headers: {'Content-Type': 'application/json'},
-//         body: JSON.stringify({user_id: currentUserObj.id}),
-//         }) 
-//         .then(resp => resp.json())
-//         .then(game => {
-//             currentGame = game
-//             console.log( currentGame.score )
-//             getCurrentGame();	
-//             runGame();		
-//         })
-//         .catch(error => alert(error.message)); 
-// }
-
-// updateGame = () => {
-    
-//     fetch(GAME_URL + '/' + currentGame.id, {
-//         method: 'PATCH',
-//         headers: {'Content-Type': 'application/json'},
-//         body: JSON.stringify({ score: currentGame.score }),
-//     }) 
-//     .then(resp => resp.json())
-//     .then(game => {
-//         currentGame = game
-//         // console.log( currentGame.score )
-//     })
-//     .catch(error => alert(error.message));
-                
-// }
-
-// getCurrentGame = () => {
-    
-//     fetch(GAME_URL + '/' + currentGame.id, {
+// userTopScores = () => {
+//     fetch(USER_URL + '/' + currentUserObj.id + 'highscores', {
 //         method: 'GET',
-//         headers: {'Content-Type': 'application/json'}
-//         }) 
-//         .then(resp => resp.json())
-//         .then(game => {
-//             currentGame = game
-//             console.log( currentGame.score )
-//         })
-//         .catch(error => alert(error.message));
-    
-//     getGameLoop = setTimeout(getCurrentGame, 1000)
+//         headers: {'Content-Type': 'application/json'},
+//     })
+//     .then(resp => resp.json())
+//     .then(topScores => {
+//         userScores = topScores
+//         console.log(userScores)
+//     }) 
+//     .catch(error => alert(error.message));
 // }
 
 // gameLoop()

@@ -1,8 +1,6 @@
-// const GAME_URL = 'http://localhost:3000/games'
-
-export default class Game {
-    constructor (score) {
-        this.score = score
+class Game {
+    constructor () {
+        this.score = 0
     }
 
     newGame = () => {
@@ -15,7 +13,7 @@ export default class Game {
             .then(resp => resp.json())
             .then(game => {
                 currentGame = game
-                console.log( this.score )
+                console.log( currentGame.score )
                 getCurrentGame();	
                 runGame();		
             })
@@ -38,23 +36,5 @@ export default class Game {
                     
     }
     
-    getCurrentGame = () => {
-        
-        fetch(GAME_URL + '/' + currentGame.id, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'}
-            }) 
-            .then(resp => resp.json())
-            .then(game => {
-                this = game
-                console.log( this.score )
-            })
-            .catch(error => alert(error.message));
-        
-        getGameLoop = setTimeout(getCurrentGame, 1000)
-    }
-
-    yourScore() {
-        console.log(`You scored ${this.score} hits this time!`)
-    }
 }
+
