@@ -6,7 +6,7 @@ Players can move up, down, left, right, and are able to shoot missiles. Once an 
 Motivation -
 I was very keen to move away from building applications which pertain to blogs, etc. and move on to something more challenging. My passion for gaming also played its part. 
 
-Demo - https://youtu.be/cZrEFP9jZVU
+Demo - https://www.youtube.com/watch?v=nttwvGktbR4
 
 
 Built with:
